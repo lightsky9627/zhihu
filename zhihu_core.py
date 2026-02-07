@@ -119,8 +119,13 @@ class ZhihuDownloader:
             
             zf.writestr(f"{safe_title}.md", final_md)
             
+        # Add timestamp to filename
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        final_filename = f"{safe_title}_{timestamp}.zip"
+        
         mem_zip.seek(0)
-        return (f"{safe_title}.zip", mem_zip)
+        return (final_filename, mem_zip)
 
     def _extract_font_data(self, html):
         # Extract base64 fonts

@@ -63,8 +63,17 @@ async function handleDownload(e) {
             const contentDisposition = response.headers.get('Content-Disposition');
             let filename = 'download.zip';
             if (contentDisposition) {
-                const match = contentDisposition.match(/filename="?([^"]+)"?/);
-                if (match && match[1]) filename = match[1];
+                // Try filename*=UTF-8''... format first (RFC 5987)
+                const filenameStar = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+                if (filenameStar && filenameStar[1]) {
+                    filename = decodeURIComponent(filenameStar[1]);
+                } else {
+                    // Fallback to filename="..."
+                    const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+                    if (filenameMatch && filenameMatch[1]) {
+                        filename = filenameMatch[1];
+                    }
+                }
             }
 
             a.download = filename;
