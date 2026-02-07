@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Zhihu Downloader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <div class="header-actions">
+                <a href="{{ url_for('logout') }}" class="btn-text-only">Logout</a>
+            </div>
+        </header>
+
+        <main>
+            <div class="card">
+                <h2>Global Configuration</h2>
+                <p class="description">Set the global cookie used for downloading when users don't provide their own.
+                    This is write-only for security.</p>
+
+                <form id="cookieForm">
+                    <div class="input-group">
+                        <label for="cookie">Global Cookie</label>
+                        <textarea id="cookie" name="cookie" rows="5" placeholder="Paste new global cookie here..."
+                            required></textarea>
+                    </div>
+
+                    <button type="submit" id="saveBtn">Update Cookie</button>
+                    <div id="message" class="message"></div>
+                </form>
+            </div>
+        </main>
+
+        <footer>
+            <a href="{{ url_for('index') }}">Back to Home</a>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('cookieForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveBtn');
+            const msg = document.getElementById('message');
+            const cookie = document.getElementById('cookie').value;
+
+            btn.disabled = true;
+            btn.textContent = 'Updating...';
+            msg.textContent = '';
+            msg.className = 'message';
+
+            try {
+                const formData = new FormData();
+                formData.append('cookie', cookie);
+
+                const response = await fetch('/api/admin/cookie', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    msg.textContent = 'Cookie updated successfully!';
+                    msg.classList.add('success');
+                    document.getElementById('cookie').value = ''; // Clear for security
+                } else {
+                    msg.textContent = data.error || 'Failed to update cookie';
+                    msg.classList.add('error');
+                }
+            } catch (err) {
+                msg.textContent = 'Network error occurred';
+                msg.classList.add('error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Update Cookie';
+            }
+        });
+    </script>
+</body>
+
+</html>

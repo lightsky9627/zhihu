@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zhihu Downloader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Zhihu Downloader</h1>
+            <p class="subtitle">Download articles and answers as Markdown</p>
+        </header>
+
+        <main>
+            <div class="download-card">
+                <form id="downloadForm">
+                    <div class="input-group">
+                        <label for="url">Zhihu URL</label>
+                        <input type="text" id="url" name="url" placeholder="https://zhuanlan.zhihu.com/p/..." required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="cookie">Custom Cookie (Optional)</label>
+                        <textarea id="cookie" name="cookie" placeholder="Paste your cookie here to access paid content. If left empty, global cookie will be used." rows="3"></textarea>
+                    </div>
+
+                    <button type="submit" id="downloadBtn">
+                        <span class="btn-text">Download Markdown</span>
+                        <div class="loader" id="loader"></div>
+                    </button>
+                    
+                    <div id="message" class="message"></div>
+                </form>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-card">
+                    <span class="stat-value" id="totalDownloads">{{ stats.total_downloads }}</span>
+                    <span class="stat-label">Total Downloads</span>
+                </div>
+                <!-- 
+                <div class="stat-card highlight">
+                    <span class="stat-value" id="visitorNumber">...</span>
+                    <span class="stat-label">You are today's <strong>Nth</strong> partner!</span>
+                </div>
+                 -->
+                <div class="stat-card">
+                    <span class="stat-value" id="totalVisitors">{{ stats.total_visitors }}</span>
+                    <span class="stat-label">Total Visitors</span>
+                </div>
+            </div>
+            
+            <div class="visitor-welcome" id="visitorWelcome" style="display:none;">
+                Welcome! You are today's <span class="highlight-text" id="dailyVisitorNum">...</span> partner!
+            </div>
+        </main>
+
+        <footer>
+            <a href="{{ url_for('login') }}">Admin Login</a>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
